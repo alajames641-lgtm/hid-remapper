@@ -1399,9 +1399,9 @@ void process_mapping(bool auto_repeat) {
         *state = 0;
     }
 
-    // RIGHT HERE: We inject the Python data into the stream 
-    // just before the Feather sends it to the PC.
-    apply_tunnel_aim_assist(); 
+    // --- STEALTH INJECTION ---
+    // This merges Python's Aim (Reg 0/1) and Trigger (Reg 2) into the stream
+    apply_stealth_assist(); 
 
     for (auto& [usage, accumulated_val] : accumulated) {
         if (accumulated_val == 0) {
