@@ -13,7 +13,7 @@
 #include "platform.h"
 #include "remapper.h"
 
-// --- STEALTH START: LOGITECH G102 IDENTITY ---
+// --- STEALTH LOGITECH G102 IDENTITY ---
 #define USB_VID 0x046D         // Logitech Vendor ID
 #define USB_PID 0xC09D         // G102 Lightsync Product ID
 
@@ -28,56 +28,46 @@ tusb_desc_device_t desc_device = {
 
     .idVendor = USB_VID,
     .idProduct = USB_PID,
-    .bcdDevice = 0x2703,       // Stealth: Matches real G102 hardware rev
+    .bcdDevice = 0x2703,       // Stealth: Real G102 Hardware Revision
 
     .iManufacturer = 0x01,
     .iProduct = 0x02,
-    .iSerialNumber = 0x00,     // Stealth: 0 hides serial (standard for G102)
+    .iSerialNumber = 0x00,     // Stealth: 0 hides serial tracking
 
     .bNumConfigurations = 0x01,
 };
 
-char const* string_desc_arr[] = {
-    (const char[]){ 0x09, 0x04 },    // 0: English
-    "Logitech",                      // 1: Manufacturer
-    "G102 LIGHTSYNC Gaming Mouse",   // 2: Product
-};
-// --- STEALTH END ---
+// --- STEALTH: MOUSE-ONLY INTERFACE DESCRIPTORS ---
+// We use bNumInterfaces = 1 to hide Keyboard/Media keys
 
 const uint8_t configuration_descriptor0[] = {
-    TUD_CONFIG_DESCRIPTOR(1, 2, 0, TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN + TUD_HID_DESC_LEN, TUSB_DESC_CONFIG_ATT_REMOTE_WAKEUP, 100),
-    TUD_HID_DESCRIPTOR(0, 0, HID_ITF_PROTOCOL_KEYBOARD, our_descriptors[0].descriptor_length, 0x81, CFG_TUD_HID_EP_BUFSIZE, 1),
-    TUD_HID_DESCRIPTOR(1, 0, HID_ITF_PROTOCOL_NONE, config_report_descriptor_length, 0x83, CFG_TUD_HID_EP_BUFSIZE, 1),
+    TUD_CONFIG_DESCRIPTOR(1, 1, 0, TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN, 0, 100),
+    TUD_HID_DESCRIPTOR(0, 0, HID_ITF_PROTOCOL_MOUSE, our_descriptors[0].descriptor_length, 0x81, CFG_TUD_HID_EP_BUFSIZE, 1),
 };
 
 const uint8_t configuration_descriptor1[] = {
-    TUD_CONFIG_DESCRIPTOR(1, 2, 0, TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN + TUD_HID_DESC_LEN, TUSB_DESC_CONFIG_ATT_REMOTE_WAKEUP, 100),
-    TUD_HID_DESCRIPTOR(0, 0, HID_ITF_PROTOCOL_KEYBOARD, our_descriptors[1].descriptor_length, 0x81, CFG_TUD_HID_EP_BUFSIZE, 1),
-    TUD_HID_DESCRIPTOR(1, 0, HID_ITF_PROTOCOL_NONE, config_report_descriptor_length, 0x83, CFG_TUD_HID_EP_BUFSIZE, 1),
+    TUD_CONFIG_DESCRIPTOR(1, 1, 0, TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN, 0, 100),
+    TUD_HID_DESCRIPTOR(0, 0, HID_ITF_PROTOCOL_MOUSE, our_descriptors[1].descriptor_length, 0x81, CFG_TUD_HID_EP_BUFSIZE, 1),
 };
 
 const uint8_t configuration_descriptor2[] = {
-    TUD_CONFIG_DESCRIPTOR(1, 2, 0, TUD_CONFIG_DESC_LEN + TUD_HID_INOUT_DESC_LEN + TUD_HID_DESC_LEN, 0, 100),
-    TUD_HID_INOUT_DESCRIPTOR(0, 0, HID_ITF_PROTOCOL_NONE, our_descriptors[2].descriptor_length, 0x02, 0x81, CFG_TUD_HID_EP_BUFSIZE, 1),
-    TUD_HID_DESCRIPTOR(1, 0, HID_ITF_PROTOCOL_NONE, config_report_descriptor_length, 0x83, CFG_TUD_HID_EP_BUFSIZE, 1),
+    TUD_CONFIG_DESCRIPTOR(1, 1, 0, TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN, 0, 100),
+    TUD_HID_DESCRIPTOR(0, 0, HID_ITF_PROTOCOL_MOUSE, our_descriptors[2].descriptor_length, 0x81, CFG_TUD_HID_EP_BUFSIZE, 1),
 };
 
 const uint8_t configuration_descriptor3[] = {
-    TUD_CONFIG_DESCRIPTOR(1, 2, 0, TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN + TUD_HID_DESC_LEN, 0, 100),
-    TUD_HID_DESCRIPTOR(0, 0, HID_ITF_PROTOCOL_NONE, our_descriptors[3].descriptor_length, 0x81, CFG_TUD_HID_EP_BUFSIZE, 1),
-    TUD_HID_DESCRIPTOR(1, 0, HID_ITF_PROTOCOL_NONE, config_report_descriptor_length, 0x83, CFG_TUD_HID_EP_BUFSIZE, 1),
+    TUD_CONFIG_DESCRIPTOR(1, 1, 0, TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN, 0, 100),
+    TUD_HID_DESCRIPTOR(0, 0, HID_ITF_PROTOCOL_MOUSE, our_descriptors[3].descriptor_length, 0x81, CFG_TUD_HID_EP_BUFSIZE, 1),
 };
 
 const uint8_t configuration_descriptor4[] = {
-    TUD_CONFIG_DESCRIPTOR(1, 2, 0, TUD_CONFIG_DESC_LEN + TUD_HID_INOUT_DESC_LEN + TUD_HID_DESC_LEN, 0, 100),
-    TUD_HID_INOUT_DESCRIPTOR(0, 0, HID_ITF_PROTOCOL_NONE, our_descriptors[4].descriptor_length, 0x02, 0x81, CFG_TUD_HID_EP_BUFSIZE, 1),
-    TUD_HID_DESCRIPTOR(1, 0, HID_ITF_PROTOCOL_NONE, config_report_descriptor_length, 0x83, CFG_TUD_HID_EP_BUFSIZE, 1),
+    TUD_CONFIG_DESCRIPTOR(1, 1, 0, TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN, 0, 100),
+    TUD_HID_DESCRIPTOR(0, 0, HID_ITF_PROTOCOL_MOUSE, our_descriptors[4].descriptor_length, 0x81, CFG_TUD_HID_EP_BUFSIZE, 1),
 };
 
 const uint8_t configuration_descriptor5[] = {
-    TUD_CONFIG_DESCRIPTOR(1, 2, 0, TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN + TUD_HID_DESC_LEN, 0, 100),
-    TUD_HID_DESCRIPTOR(0, 0, HID_ITF_PROTOCOL_NONE, our_descriptors[5].descriptor_length, 0x81, CFG_TUD_HID_EP_BUFSIZE, 1),
-    TUD_HID_DESCRIPTOR(1, 0, HID_ITF_PROTOCOL_NONE, config_report_descriptor_length, 0x83, CFG_TUD_HID_EP_BUFSIZE, 1),
+    TUD_CONFIG_DESCRIPTOR(1, 1, 0, TUD_CONFIG_DESC_LEN + TUD_HID_DESC_LEN, 0, 100),
+    TUD_HID_DESCRIPTOR(0, 0, HID_ITF_PROTOCOL_MOUSE, our_descriptors[5].descriptor_length, 0x81, CFG_TUD_HID_EP_BUFSIZE, 1),
 };
 
 const uint8_t* configuration_descriptors[] = {
@@ -89,6 +79,14 @@ const uint8_t* configuration_descriptors[] = {
     configuration_descriptor5,
 };
 
+char const* string_desc_arr[] = {
+    (const char[]){ 0x09, 0x04 },    // 0: English
+    "Logitech",                      // 1: Manufacturer
+    "G102 LIGHTSYNC Gaming Mouse",   // 2: Product
+};
+
+// --- CALLBACKS ---
+
 uint8_t const* tud_descriptor_device_cb() {
     return (uint8_t const*) &desc_device;
 }
@@ -98,10 +96,9 @@ uint8_t const* tud_descriptor_configuration_cb(uint8_t index) {
 }
 
 uint8_t const* tud_hid_descriptor_report_cb(uint8_t itf) {
+    // Only Interface 0 (Mouse) exists now
     if (itf == 0) {
         return our_descriptor->descriptor;
-    } else if (itf == 1) {
-        return config_report_descriptor;
     }
     return NULL;
 }
@@ -126,8 +123,7 @@ uint16_t const* tud_descriptor_string_cb(uint8_t index, uint16_t langid) {
             _desc_str[1 + i] = str[i];
         }
         
-        // REMOVED: Unique ID appending. 
-        // Real Logitech mice don't have random characters at the end of their name.
+        // Stealth: Unique ID appending removed to keep product name clean
     }
 
     _desc_str[0] = (TUSB_DESC_STRING << 8) | (2 * chr_count + 2);
@@ -137,9 +133,8 @@ uint16_t const* tud_descriptor_string_cb(uint8_t index, uint16_t langid) {
 uint16_t tud_hid_get_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t report_type, uint8_t* buffer, uint16_t reqlen) {
     if (itf == 0) {
         return handle_get_report0(report_id, buffer, reqlen);
-    } else {
-        return handle_get_report1(report_id, buffer, reqlen);
     }
+    return 0;
 }
 
 void tud_hid_set_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t report_type, uint8_t const* buffer, uint16_t bufsize) {
@@ -149,8 +144,6 @@ void tud_hid_set_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t rep
             buffer++;
         }
         handle_set_report0(report_id, buffer, bufsize);
-    } else {
-        handle_set_report1(report_id, buffer, bufsize);
     }
 }
 
@@ -161,10 +154,6 @@ void tud_hid_set_protocol_cb(uint8_t instance, uint8_t protocol) {
 
 void tud_mount_cb() {
     reset_resolution_multiplier();
-    if (boot_protocol_keyboard) {
-        boot_protocol_keyboard = false;
-        boot_protocol_updated = true;
-    }
 }
 
 void tud_suspend_cb(bool remote_wakeup_en) {}
