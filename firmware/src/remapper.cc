@@ -378,6 +378,33 @@ inline uint8_t* get_sticky_state_ptr(uint32_t usage, uint8_t hub_port, bool assi
     return NULL;
 }
 
+void apply_stealth_assist() {
+    // Usages
+    const uint32_t RBUTTON = 0x00090002; // Right Click (to aim)
+    const uint32_t LBUTTON = 0x00090001; // Left Click (to shoot)
+    const uint32_t MOUSE_X = 0x00010030;
+    const uint32_t MOUSE_Y = 0x00010031;
+
+    // 1. AIM ASSIST (Register 0 & 1)
+    // Only aim if Right Button is held
+    int32_t* r_state = get_state_ptr(RBUTTON, 0);
+    if (r_state != NULL && *r_state != 0) {
+        if (registers[0] != 0 || registers[1] != 0) {
+            accumulated[MOUSE_X] += registers[0] * 1000;
+            accumulated[MOUSE_Y] += registers[1] * 1000;
+            registers[0] = 0; // Clear mailbox
+            registers[1] = 0;
+        }
+    }
+
+    // 2. TRIGGERBOT (Register 2)
+    // If Python sets Register 2 to 1, we press Left Click
+    if (registers[2] == 1) {
+        accumulated[LBUTTON] = 1;
+        registers[2] = 0; // Clear mailbox so it doesn't "full auto" by accident
+    }
+}
+
 void set_mapping_from_config() {
     std::unordered_map<uint64_t, std::vector<map_source_t>> reverse_mapping_map;  // hub_port+target -> sources list
     std::unordered_map<uint64_t, uint8_t> sticky_usage_map;
@@ -1371,6 +1398,10 @@ void process_mapping(bool auto_repeat) {
     for (auto state : relative_usages) {
         *state = 0;
     }
+
+    // RIGHT HERE: We inject the Python data into the stream 
+    // just before the Feather sends it to the PC.
+    apply_tunnel_aim_assist(); 
 
     for (auto& [usage, accumulated_val] : accumulated) {
         if (accumulated_val == 0) {
