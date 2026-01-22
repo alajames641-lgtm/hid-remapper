@@ -32,15 +32,13 @@
 #include "platform.h"
 #include "remapper.h"
 
-// These IDs are bogus. If you want to distribute any hardware using this,
-// you will have to get real ones.
-#define USB_VID 0xCAFE
-#define USB_PID 0xBAF2
+#define USB_VID 0x046D         // Logitech Vendor ID
+#define USB_PID 0xC09D         // G102 Lightsync Product ID
 
 tusb_desc_device_t desc_device = {
     .bLength = sizeof(tusb_desc_device_t),
     .bDescriptorType = TUSB_DESC_DEVICE,
-    .bcdUSB = 0x0200,
+    .bcdUSB = 0x0200,          // USB 2.0
     .bDeviceClass = 0x00,
     .bDeviceSubClass = 0x00,
     .bDeviceProtocol = 0x00,
@@ -48,11 +46,11 @@ tusb_desc_device_t desc_device = {
 
     .idVendor = USB_VID,
     .idProduct = USB_PID,
-    .bcdDevice = 0x0100,
+    .bcdDevice = 0x2703,       // Stealth: Real G102 Firmware Revision
 
     .iManufacturer = 0x01,
     .iProduct = 0x02,
-    .iSerialNumber = 0x00,
+    .iSerialNumber = 0x00,     // Stealth: Most gaming mice hide this
 
     .bNumConfigurations = 0x01,
 };
