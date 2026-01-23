@@ -139,7 +139,7 @@ uint16_t tud_hid_get_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t
 
 void tud_hid_set_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t report_type, uint8_t const* buffer, uint16_t bufsize) {
     if (itf == 0) {
-        if ((report_id == 0) && (report_type == 0) && (bufsize > 0)) {
+        if ((report_id == 0) && (bufsize > 0)) {
             report_id = buffer[0];
             buffer++;
         }
