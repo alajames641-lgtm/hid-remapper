@@ -387,8 +387,8 @@ void apply_stealth_assist() {
 
     // 1. AIM ASSIST (Register 0 & 1)
     // Only aim if Right Button is held
-    int32_t* r_state = get_state_ptr(RBUTTON, 0);
-    if (r_state != NULL && *r_state != 0) {
+    // TEMPORARILY DISABLED FOR TESTING: if (r_state != NULL && *r_state != 0) {
+    if (true) {  // Always aim for testing
         if (registers[0] != 0 || registers[1] != 0) {
             accumulated[MOUSE_X] += registers[0] * 1000;
             accumulated[MOUSE_Y] += registers[1] * 1000;
@@ -2100,6 +2100,12 @@ uint16_t handle_get_report0(uint8_t report_id, uint8_t* buffer, uint16_t reqlen)
 }
 
 void handle_set_report0(uint8_t report_id, const uint8_t* buffer, uint16_t reqlen) {
+    if (report_id == 4 && reqlen >= 6) {
+        // Map the bytes back into our 16-bit registers
+        registers[0] = (int16_t)(buffer[0] | (buffer[1] << 8));
+        registers[1] = (int16_t)(buffer[2] | (buffer[3] << 8));
+        registers[2] = (int16_t)(buffer[4] | (buffer[5] << 8));
+    }
     if (our_descriptor->handle_set_report != nullptr) {
         our_descriptor->handle_set_report(report_id, buffer, reqlen);
     }
