@@ -139,6 +139,7 @@ uint16_t tud_hid_get_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t
 
 void tud_hid_set_report_cb(uint8_t itf, uint8_t report_id, hid_report_type_t report_type, uint8_t const* buffer, uint16_t bufsize) {
     if (itf == 0) {
+        digitalWrite(13, !digitalRead(13));  // Toggle LED on set report
         printf("Set report: id %d type %d size %d\n", report_id, report_type, bufsize);
         if ((report_id == 0) && (bufsize > 0)) {
             report_id = buffer[0];
@@ -156,6 +157,7 @@ void tud_hid_set_protocol_cb(uint8_t instance, uint8_t protocol) {
 
 void tud_mount_cb() {
     reset_resolution_multiplier();
+    pinMode(13, OUTPUT);
 }
 
 void tud_suspend_cb(bool remote_wakeup_en) {}
