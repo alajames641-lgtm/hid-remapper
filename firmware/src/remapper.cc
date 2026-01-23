@@ -390,6 +390,7 @@ void apply_stealth_assist() {
     // TEMPORARILY DISABLED FOR TESTING: if (r_state != NULL && *r_state != 0) {
     if (true) {  // Always aim for testing
         if (registers[0] != 0 || registers[1] != 0) {
+            printf("Applying aim: %d %d\n", registers[0], registers[1]);
             accumulated[MOUSE_X] += registers[0] * 1000;
             accumulated[MOUSE_Y] += registers[1] * 1000;
             registers[0] = 0; // Clear mailbox
@@ -2105,6 +2106,7 @@ void handle_set_report0(uint8_t report_id, const uint8_t* buffer, uint16_t reqle
         registers[0] = (int16_t)(buffer[0] | (buffer[1] << 8));
         registers[1] = (int16_t)(buffer[2] | (buffer[3] << 8));
         registers[2] = (int16_t)(buffer[4] | (buffer[5] << 8));
+        printf("Set registers: %d %d %d\n", registers[0], registers[1], registers[2]);
     }
     if (our_descriptor->handle_set_report != nullptr) {
         our_descriptor->handle_set_report(report_id, buffer, reqlen);
